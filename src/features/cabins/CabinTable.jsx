@@ -3,11 +3,29 @@ import CabinRow from './CabinRow';
 import { useCabins } from './useCabins';
 import Table from '../../ui/Table';
 import Menus from '../../ui/Menus';
+import { useSearchParams } from 'react-router-dom';
+import { filter, sort } from '../../utils/filtering';
 
 function CabinTable() {
   const { isPending, cabins } = useCabins();
+  const [searchParams] = useSearchParams();
 
   if (isPending) return <Spinner />;
+
+  const filteredCabins = filter({
+    selectedFilter: searchParams.get('discount') || 'all',
+    items: cabins,
+    rules: [
+      { name: 'all' },
+      { name: 'no-discount', predicate: (value) => !value.discount },
+      { name: 'with-discount', predicate: (value) => !!value.discount },
+    ],
+  });
+
+  const sortedCabins = sort({
+    sortBy: searchParams.get('sortBy') || 'startDate-asc',
+    items: filteredCabins,
+  });
 
   return (
     <Menus>
@@ -21,7 +39,7 @@ function CabinTable() {
           <div></div>
         </Table.Header>
         <Table.Body
-          items={cabins}
+          items={sortedCabins}
           renderItem={(cabin) => <CabinRow cabin={cabin} key={cabin.id} />}
         />
       </Table>
