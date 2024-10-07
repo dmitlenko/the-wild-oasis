@@ -8,13 +8,9 @@ export function useLogin() {
   const queryClient = useQueryClient();
   const { mutate, isPending } = useMutation({
     mutationFn: login,
-    onSuccess: () => {
+    onSuccess: (user) => {
+      queryClient.setQueryData(['user'], user.user);
       navigate('/dashboard', { replace: true });
-
-      // This fixes weird redirection bug
-      queryClient.invalidateQueries({
-        queryKey: ['user'],
-      });
     },
     onError: () => toast.error('Provided email or password is incorrect'),
   });
