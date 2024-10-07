@@ -15,10 +15,5 @@ export function useBooking() {
     retry: false,
   });
 
-  if (error) {
-    console.log(error);
-    throw new Error('Could not get booking');
-  }
-
   return { booking, isPending, error };
 }
