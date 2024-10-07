@@ -15,5 +15,5 @@ export function useRecentBookings() {
     queryFn: () => getBookingsAfterDate(queryDate),
   });
 
-  return { isPending, bookings };
+  return { isPending, bookings, numDays };
 }
